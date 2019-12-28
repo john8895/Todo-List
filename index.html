@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css">
+    <style>
+        html {
+            background: url(img/bg3.jpg) no-repeat center / cover;
+            height: 100%;
+            width: 100%;
+            font-family: "Microsoft JhengHei";
+        }
+        body {
+            font-size: 15px;
+        }
+        a {
+            text-decoration: none;
+        }
+    .todoList {
+        background-color: #fff;
+        color: #000;
+        opacity: 0.9;
+        width: 70%;
+        margin: 40px auto 0;
+        border-radius: 20px;
+        box-shadow: -1px 4px 7px rgba(0, 0, 0, 0.35);
+    }
+    .todoList h2 {
+        margin: 0 0 20px;
+    }
+    .block {
+        padding: 20px 50px;
+    }
+    .todoList a {
+        color: #000;
+    }
+    .textInput {
+        line-height: 1.8;
+        font-size: 16px;
+        padding: 0 10px;
+    }
+    .list {
+        font-size: 16px;
+        padding: 20px 0 0;
+        margin: 0 0 0 20px;
+        list-style-type: none;
+    }
+    .list li {
+        line-height: 1.7;
+    }
+    .list li a:before {
+        content: '\f057';
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        margin-right: 10px;
+        font-size: 12px;
+        color: #ddd;
+        
+    }
+    .list li a:hover:before {
+        color: #f00;
+    }
+    .list li:before {
+        content: '\f054';
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        margin-right: 10px;
+        font-size: 12px;
+        color: #999;
+    }
+    .inpBtn {
+        height: 30px;
+        font-size: 16px;
+        color: #000;
+    }
+    .del-btn {
+        margin-left: 8px;
+    }
+    .error {
+        color: red;
+        font-size: 14px;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="todoList">
+        <div class="block">
+            <h2>小農夫待辦事項計畫 TODO List</h2>
+            <span class="error"></span>
+            <form action="">
+        <input type="text" class="textInput" placeholder="請輸入待辦事項" value="">
+        <button class="inpBtn" type="submit">加入待辦事項</button>
+    </form>
+        <ul class="list"></ul>
+        <p class="para"></p>
+    </div>
+    </div>
+    <!-- <script src="js/all.js"></script> -->
+    <script>
+        var list = document.querySelector('.list');
+        var text = document.querySelector('.textInput');
+        var inpBtn = document.querySelector('.inpBtn');
+        var delBtn = document.querySelector('.del-btn');
+        var para = document.querySelector('.para');
+        var errorShow = document.querySelector('.error');
+        var todoItems = [];
+
+        //顯示
+        function updateList(e){ 
+            var getData = localStorage.getItem('todoItem');
+            if(getData !== null){
+                getDataAry = JSON.parse(getData);
+                // console.log(getDataAry);
+                var len = getDataAry.length;
+                var str ='';
+                for(var i=0; len>i; i++){
+                    str += '<li>' + getDataAry[i] + '<a href="#" class="del-btn" data-num="'+ i + '"></a></li>';
+                }
+            list.innerHTML = str;
+            todoItems = getDataAry;
+            };
+            if(getData == '[]') {
+                para.innerHTML = "目前沒有待辦事項，你來加一筆吧！";
+            }else {
+                para.innerHTML = '目前共有 '+ len + ' 筆待辦事項，加緊趕工完成它吧！';
+            }
+        }
+        updateList();
+
+        //新增
+        function checkList(){
+            var str = text.value;
+            if(str !== ''){
+                todoItems.push(str);
+                text.value = '';
+            }
+            var strAry = JSON.stringify(todoItems);
+            localStorage.setItem('todoItem',strAry);
+            updateList();
+        }
+        //刪除
+        function delList(e){
+            e.preventDefault();
+            // console.log(e);
+            var answer = confirm("請問是否要刪除？");
+            if(answer == true){
+                if(e.target.nodeName !== "A"){return};
+                var num = e.target.dataset.num;
+                todoItems.splice(num,1);
+                var strAry
+                checkList();
+            }
+            
+        }
+
+
+        list.addEventListener('click',delList,false)
+        inpBtn.addEventListener('click',checkList,false);
+    </script>
+</body>
+</html>
